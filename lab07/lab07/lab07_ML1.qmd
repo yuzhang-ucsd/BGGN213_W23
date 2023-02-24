@@ -1,0 +1,133 @@
+---
+title: "lab07"
+format: html
+editor: visual
+---
+
+# K Means Clustering
+
+```{r}
+tmp <- c(rnorm(30,-3),rnorm(30,3) )
+hist(tmp)
+```
+
+```{r}
+x <- data.frame(x=tmp,y=rev(tmp))
+plot(x)
+```
+
+```{r}
+km <- kmeans(x, centers=2)
+km$cluster
+```
+
+```{r}
+plot(x,col=km$cluster+1)
+```
+
+```{r}
+library(ggplot2)
+ggplot(x) +
+  aes(x,y) +
+  geom_point(col=km$cluster)
+```
+
+```{r}
+mycols <- rep("grey",60)
+mycols[km$cluster==1] <- "green"
+mycols[c(10,12,20)] <- "red"
+plot(x,col=mycols)
+```
+
+```{r}
+totss <- NULL
+k <- 1:7
+for (i in k){
+  km <- kmeans(x,centers=i)
+  #totss[i] <- km$tot.withinss
+  totss <- c(totss,km$tot.withinss)
+}
+totss
+plot(totss,type="o")
+```
+
+```{r}
+totss <- rep(NaN,7)
+k <- 1:7
+for (i in k){
+  totss[i] <- kmeans(x,centers=i)$tot.withinss
+  #totss <- c(totss,km$tot.withinss)
+}
+totss
+```
+
+# Hierarchical Clunstering
+
+```{r}
+d <- dist(x)
+hc <- hclust(d)
+plot(hc)
+```
+
+```{r}
+cutree(hc,h=10)
+grps <- cutree(hc,k=2)
+```
+
+```{r}
+ggplot(x) +
+  aes(x,y) +
+  geom_point(col=grps)
+```
+
+# PCA
+
+```{r}
+url <- "https://tinyurl.com/UK-foods"
+x <- read.csv(url,row.names=1)
+head(x)
+```
+
+```{r}
+pairs(x, col=rainbow(10), pch=16)
+```
+
+```{r}
+barplot(as.matrix(x), beside=F, col=rainbow(nrow(x)))
+```
+
+```{r}
+pca <- prcomp( t(x) )
+summary(pca)$importance
+```
+
+```{r}
+pca$x[,"PC1"]
+```
+
+```{r}
+plot(pca$x[,"PC1"], pca$x[,"PC2"], xlab="PC1", ylab="PC2", xlim=c(-270,500), col=c(1:4),cex=2)
+text(pca$x[,1], pca$x[,2], colnames(x),col=c(1:4))
+```
+
+```{r}
+v <- round( pca$sdev^2/sum(pca$sdev^2) * 100 )
+barplot(v, xlab="Principal Component", ylab="Percent Variation")
+```
+
+```{r}
+## Lets focus on PC1 as it accounts for > 90% of variance 
+par(mar=c(10, 3, 0.35, 0))
+barplot( pca$rotation[,1], las=2 )
+```
+
+```{r}
+pca$rotation
+pca$x[]
+```
+
+```{r}
+ggplot(as.data.frame(pca$rotation)) +
+  aes(pca$rotation[,1],rownames(pca$rotation)) +
+  geom_col()
+```
