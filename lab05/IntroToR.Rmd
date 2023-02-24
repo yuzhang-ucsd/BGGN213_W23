@@ -1,0 +1,43 @@
+---
+title: "IntroToR"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Vectors
+```{r}
+# shortcut: option + - gives <-
+x <- 1:5
+y <- x + 100
+z <- x + c(100,1)
+print(z)
+```
+```{r}
+y <- c("a","b","c","d")
+paste(y,"lo'o'p") #adds things to each of the elements in the vector
+```
+```{r}
+grades <- c(a=1,b=2,c=4,d=0) #names associated with vectors
+print(grades[2])
+print(grades["c"])
+sort(grades)
+grades+c(scale=100) #does not change the names, does not add scale to the existing names, only add on to the numbers
+```
+## Dataframes
+#### rows first cols second e.g., df[rows,cols]
+```{r}
+df <- data.frame(nums=1:5,chars=letters[1:5], logical=c(T,T,F,T,F))
+df$nums # returns a vector
+df["nums"] # does the same job
+df[,1] # return the first col as a vector
+df[1] # return the dataframe (with the header), b/c most of the time observations are in rows and variables are in columns, colums usually contains the data we want to look into
+```
+
+```{r}
+df$chars[df$nums>3]
+df[df$nums>3,]
+```
+
