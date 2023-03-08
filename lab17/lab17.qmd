@@ -5,7 +5,121 @@ format: html
 editor: visual
 ---
 
+## Data Input
+# Background
 ```{r}
+vax <- read.csv("covid19vaccinesbyzipcode_test.csv")
+#head(vax)
+```
+# Quick EDA
+```{r}
+vax$as_of_date[1]
+tail(vax$as_of_date,n=1)
+# unique(vax$as_of_date)
+```
 
+```{r}
+skimr::skim(vax)
+```
+
+```{r}
+n_missing <- sum(is.na(vax$persons_fully_vaccinated))
+percent_n_missing <- round(n_missing/nrow(vax)*100,2)
+percent_n_missing
+```
+
+```{r}
+#| message: false
+library(lubridate)
+today()-ymd(vax$as_of_date[1])
+today()-ymd("1997-03-23")
+today()-ymd("2021-11-23")
+```
+```{r}
+vax$as_of_date <- ymd(vax$as_of_date)
+today() - vax$as_of_date[nrow(vax)]
+```
+
+```{r}
+library(dplyr)
+n_distinct(vax$as_of_date)
+```
+```{r}
+library(zipcodeR)
+geocode_zip('92037')
+```
+```{r}
+reverse_zipcode(c('92037', "92109") )
+```
+```{r}
+sd_zip <- unique(vax$zip_code_tabulation_area[vax$county == "San Diego"])
+sd_eco <- reverse_zipcode(sd_zip)
+sd_eco
+```
+```{r}
+ord <- order(sd_eco$median_household_income)
+sd_eco[ord,]$median_household_income
+```
+```{r}
+library(dplyr)
+sd <- filter(vax, county == "San Diego")
+
+sd.10 <- filter(vax, county == "San Diego" &
+                age5_plus_population > 10000)
+```
+
+```{r}
+sd.latest <- filter(sd, as_of_date == "2023-03-07")
+mean(sd.latest$percent_of_population_fully_vaccinated,na.rm=T)
+```
+```{r}
+hist(sd.latest$percent_of_population_fully_vaccinated)
+```
+```{r}
+library(ggplot2)
+ggplot(sd.latest, aes(x=percent_of_population_fully_vaccinated)) + geom_histogram(bins=20) +
+  theme_bw() + xlab("percent_of_population_fully_vaccinated")
+```
+```{r}
+ucsd <- filter(sd, zip_code_tabulation_area=="92037")
+head(ucsd)
+ucsd[1,]$age5_plus_population
+```
+```{r}
+ijplot <- ggplot(ucsd) +
+  aes(as_of_date,persons_fully_vaccinated/tot_population) +
+  geom_point() +
+  geom_line(group=1) +
+  ylim(c(0,1)) +
+  labs(x="Date", y="Percent Vaccinated")
+ijplot
+```
+```{r}
+vax.36 <- filter(vax,age5_plus_population > 36144 & as_of_date == "2023-03-07")
+head(vax.36)
+```
+
+```{r}
+ijplot + geom_hline(yintercept = 0.72, linetype=2)
+```
+```{r}
+vax %>% filter(as_of_date == "2023-02-28") %>%  
+  filter(zip_code_tabulation_area=="92040") %>%
+  select(percent_of_population_fully_vaccinated)
+```
+```{r}
+filter(vax.36, zip_code_tabulation_area %in% c("92109","02040"))
+```
+
+
+```{r}
+vax.36.all <- filter(vax, age5_plus_population > 36144)
+ggplot(vax.36.all) +
+  aes(as_of_date,
+      percent_of_population_fully_vaccinated, 
+      group=zip_code_tabulation_area) +
+  geom_line(alpha=0.2, color="blue") +
+  ylim(0,1) +
+  geom_hline(yintercept = 0.72, linetype=2)
 ```
 
