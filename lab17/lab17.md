@@ -88,26 +88,26 @@ library(lubridate)
 today()-ymd(vax$as_of_date[1])
 ```
 
-    Time difference of 792 days
+    Time difference of 801 days
 
 ``` r
 today()-ymd("1997-03-23")
 ```
 
-    Time difference of 9481 days
+    Time difference of 9490 days
 
 ``` r
 today()-ymd("2021-11-23")
 ```
 
-    Time difference of 470 days
+    Time difference of 479 days
 
 ``` r
 vax$as_of_date <- ymd(vax$as_of_date)
 today() - vax$as_of_date[nrow(vax)]
 ```
 
-    Time difference of 1 days
+    Time difference of 10 days
 
 ``` r
 library(dplyr)
