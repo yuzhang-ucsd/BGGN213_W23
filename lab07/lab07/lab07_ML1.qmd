@@ -1,6 +1,6 @@
 ---
 title: "lab07"
-format: html
+format: gfm
 editor: visual
 ---
 
