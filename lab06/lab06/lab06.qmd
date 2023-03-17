@@ -1,7 +1,7 @@
 ---
 title: "lab06"
 author: Eva Zhang
-format: html
+format: gfm
 editor: visual
 ---
 
@@ -76,8 +76,6 @@ cor(mask$hw5,results)
 apply(mask, 2, cor, results)
 ```
 
-
-
 ## HW6
 
 ```{r}
@@ -103,6 +101,7 @@ prostr <- function(x, chain_name = "A", elety_name = "CA", yl = "Bfactor", atom_
 }
 prostr("4AKE")
 ```
+
 ```{r}
 plot_Bfactor <- function(x){
 # read a Protein Data Bank file
@@ -117,4 +116,3 @@ plotb3(s.b, sse=s.chainA, typ="l", ylab="Bfactor")
 
 plot_Bfactor("4AKE")
 ```
-
